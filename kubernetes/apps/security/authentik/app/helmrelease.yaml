@@ -1,0 +1,54 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: authentik
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: authentik
+      version: 2024.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: authentik-charts
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    global:
+      podAnnotations:
+        secret.reloader.stakater.com/reload: authentik-secret
+      deploymentStrategy:
+        type: RollingUpdate
+      envFrom:
+        - secretRef:
+            name: authentik-secret
+    authentik:
+      redis:
+        host: redis.database.svc.cluster.local
+    server:
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+      metrics:
+        prometheus:
+          serviceMonitor:
+            enabled: true
+      ingress:
+        enabled: true
+        ingressClassName: external
+        # annotations:
+        hosts:
+          - sso.${SECRET_DOMAIN}
+        https: false
+    worker:
+      autoscaling:
+        enabled: true
+        minReplicas: 1
