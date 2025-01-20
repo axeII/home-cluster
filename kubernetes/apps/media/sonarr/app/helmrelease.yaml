@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: ghcr.io/buroa/sonarr-develop
-              tag: 4.0.11.2724@sha256:51d3c15117d305f035f793bbbf7b7be4952fad1dc0a0564fe0109a565afe9512
+              tag: 4.0.12.2866@sha256:06e9dc6a0f975944c406400e91a6c6986ec323e97cf0e60a05a2ded9a3cae0e4
             env:
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__APP__THEME: dark
